@@ -40,9 +40,21 @@ android {
         }
     }
 
+    signingConfigs {
+        landark {
+            if (System.getenv("KEYSTORE_PATH")) {
+                storeFile file(System.getenv("KEYSTORE_PATH"))
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            signingConfig System.getenv("KEYSTORE_PATH") ? signingConfigs.landark : signingConfigs.debug
             versionNameSuffix "-DEBUG"
         }
 

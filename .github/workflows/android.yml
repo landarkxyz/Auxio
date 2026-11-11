@@ -25,8 +25,15 @@ jobs:
         cache: gradle
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: Decode keystore
+      run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/landark.keystore"
     - name: Build debug APK with Gradle
       run: ./gradlew app:packageDebug
+      env:
+        KEYSTORE_PATH: ${{ runner.temp }}/landark.keystore
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: landark
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     - name: Upload debug APK artifact
       uses: actions/upload-artifact@v4
       with:
